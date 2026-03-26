@@ -35,10 +35,7 @@ nav{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;justify-
 .hero-left{
   position:relative;
   z-index:2;
-
-  opacity:0;
-  transform: translateY(30px);
-  animation: fadeUp 1s ease forwards;
+  max-width: 420px; /* 🔥 keeps content contained */
 }
 
 @keyframes fadeUp{
@@ -52,17 +49,12 @@ nav{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;justify-
 h1.hero-name{
   font-family:'Syne',sans-serif;
   font-weight:800;
-  font-size:clamp(44px,5vw,72px);
+  font-size:clamp(42px,4.5vw,64px); /* 🔥 slightly smaller */
   line-height:0.95;
   letter-spacing:-.03em;
-  margin-bottom:12px;
+  margin-bottom:8px;
 
-  max-width: 420px;
-
-  background: linear-gradient(90deg, #ffffff, #00ffc2);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  max-width: 380px;   /* 🔥 THIS fixes everything */
 }
 .hero-name span{
   color:var(--accent);
