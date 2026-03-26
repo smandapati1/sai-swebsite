@@ -19,7 +19,14 @@ nav{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;justify-
 .nav-links{display:flex;gap:32px;list-style:none;}
 .nav-links a{font-size:11px;color:var(--muted);text-decoration:none;letter-spacing:.12em;text-transform:uppercase;transition:color .2s;}
 .nav-links a:hover{color:var(--accent);}
-#hero{min-height:100vh;display:grid;grid-template-columns:0.8fr 1.2fr;align-items:center;padding:120px 80px 80px;position:relative;overflow:hidden;}
+#hero{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  align-items:center;
+  padding:120px 80px 80px;
+  overflow: visible;
+}
 .hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(30,39,54,.4) 1px,transparent 1px),linear-gradient(90deg,rgba(30,39,54,.4) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,black 40%,transparent 100%);}
 .orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;}
 .orb1{width:500px;height:500px;background:rgba(0,255,194,.07);top:-100px;right:-100px;animation:orbF 8s ease-in-out infinite;}
@@ -45,12 +52,12 @@ nav{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;justify-
 h1.hero-name{
   font-family:'Syne',sans-serif;
   font-weight:800;
-  font-size:clamp(48px,5vw,72px);
+  font-size:clamp(44px,5vw,72px);
   line-height:0.95;
   letter-spacing:-.03em;
   margin-bottom:12px;
 
-  max-width: 480px;
+  max-width: 420px;
 
   background: linear-gradient(90deg, #ffffff, #00ffc2);
   background-clip: text;
@@ -75,7 +82,7 @@ h1.hero-name{
   background:#0a0e17;
   border:1px solid var(--border);
   border-radius:12px;
-  overflow:hidden;
+  overflow: visible;
   box-shadow:0 32px 80px rgba(0,0,0,.6);
 
   transform: translateY(0);
