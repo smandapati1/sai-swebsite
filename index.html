@@ -7,6 +7,16 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
+ .reveal{
+  opacity:0;
+  transform:translateY(30px);
+  transition:.8s ease;
+}
+
+.reveal.show{
+  opacity:1;
+  transform:translateY(0);
+}
 :root{--bg:#060810;--surface:#0d1117;--card:#111622;--border:#1e2736;--accent:#00ffc2;--accent2:#7c6aff;--accent3:#ff6a6a;--text:#e8eaf0;--muted:#5a6480;}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
@@ -19,6 +29,15 @@ nav{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;justify-
 .nav-links{display:flex;gap:32px;list-style:none;}
 .nav-links a{font-size:11px;color:var(--muted);text-decoration:none;letter-spacing:.12em;text-transform:uppercase;transition:color .2s;}
 .nav-links a:hover{color:var(--accent);}
+.typing-line{
+  opacity:0;
+  transform:translateY(10px);
+  animation:fadeUp .4s forwards;
+}
+
+@keyframes fadeUp{
+  to{opacity:1;transform:translateY(0);}
+}
 #hero{
   min-height:100vh;
   display:grid;
@@ -283,7 +302,7 @@ h2.c-head{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(36px,6vw
         <div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
         <span class="ttitle">sai@portfolio ~ zsh</span>
       </div>
-      <div class="tbody">
+      <div class="tbody" id="terminalBody"></div>
         <div><span class="tp">❯ </span><span class="tc">whoami</span></div>
         <div><span class="tv">sai_mandapati</span></div><br>
         <div><span class="tp">❯ </span><span class="tc">cat profile.json</span></div>
@@ -325,7 +344,7 @@ h2.c-head{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(36px,6vw
 </div>
  
 <section id="projects">
-  <div class="sec-hdr">
+  <div class="reveal">
     <span class="sec-num">01</span>
     <h2 class="sec-title">Selected Work</h2>
     <div class="sec-line"></div>
@@ -376,7 +395,7 @@ h2.c-head{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(36px,6vw
 </section>
  
 <section id="skills">
-  <div class="sec-hdr">
+  <div class="reveal">
     <span class="sec-num">02</span>
     <h2 class="sec-title">Technical Skills</h2>
     <div class="sec-line"></div>
@@ -428,7 +447,7 @@ h2.c-head{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(36px,6vw
 </section>
  
 <section id="experience">
-  <div class="sec-hdr">
+  <div class="reveal">
     <span class="sec-num">03</span>
     <h2 class="sec-title">Experience</h2>
     <div class="sec-line"></div>
@@ -465,7 +484,7 @@ h2.c-head{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(36px,6vw
 </section>
  
 <section id="about">
-  <div class="sec-hdr">
+  <div class="reveal">
     <span class="sec-num">04</span>
     <h2 class="sec-title">About Me</h2>
     <div class="sec-line"></div>
@@ -509,6 +528,52 @@ h2.c-head{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(36px,6vw
 </section>
  
 <script>
+// Typing terminal animation
+(function(){
+  const terminal = document.getElementById('terminalBody');
+  if(!terminal) return;
+
+  const lines = [
+    "whoami",
+    "sai_mandapati",
+    "",
+    "cat profile.json",
+    "{ role: AI Intern, school: Rutgers }",
+    "",
+    "python signbridge.py",
+    "✓ MediaPipe",
+    "✓ RandomForest",
+    "✓ Flask server"
+  ];
+
+  let i = 0;
+
+  function next(){
+    if(i >= lines.length) return;
+
+    const div = document.createElement('div');
+    div.className = 'typing-line';
+    terminal.appendChild(div);
+
+    let text = lines[i];
+    let j = 0;
+
+    function type(){
+      div.textContent = text.slice(0, j++);
+      if(j <= text.length){
+        setTimeout(type, 20);
+      } else {
+        i++;
+        setTimeout(next, 250);
+      }
+    }
+
+    type();
+  }
+
+  terminal.innerHTML = '';
+  setTimeout(next, 400);
+})();
 // Cursor
 const cur=document.getElementById('cur'),cur2=document.getElementById('cur2');
 let mx=0,my=0,rx=0,ry=0;
@@ -631,6 +696,34 @@ window.addEventListener('load',function(){
   for(let i=0;i<n;i++){const[x,y]=pt(i,values[i]);svg.appendChild(mk('circle',{cx:x,cy:y,r:'4',fill:'#00ffc2'}));}
   for(let i=0;i<n;i++){const[x,y]=pt(i,1.2);svg.appendChild(mk('text',{x,y,'text-anchor':'middle','dominant-baseline':'middle',fill:'#5a6480','font-family':'monospace','font-size':'10'},labels[i]));}
 })();
+
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add("show");
+    }
+  });
+});
+
+document.querySelectorAll("section").forEach(el=>{
+  observer.observe(el);
+});
+// Parallax (HERO GRID)
+const hero = document.getElementById("hero");
+const grid = document.querySelector(".hero-grid");
+
+if(hero && grid){
+  hero.addEventListener("mousemove", e=>{
+    const x = (e.clientX / window.innerWidth - 0.5) * 20;
+    const y = (e.clientY / window.innerHeight - 0.5) * 20;
+    grid.style.transform = `translate(${x}px, ${y}px)`;
+  });
+
+  hero.addEventListener("mouseleave", ()=>{
+    grid.style.transform = "translate(0,0)";
+  });
+}
+
 </script>
 </body>
 </html>
