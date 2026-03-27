@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,7 +49,7 @@ nav{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;justify-
 
   overflow:visible;  /* 🔥 THIS FIXES THE CUT OFF */
 }
-.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(30,39,54,.4) 1px,transparent 1px),linear-gradient(90deg,rgba(30,39,54,.4) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,black 40%,transparent 100%);}
+.hero-grid{transition: transform 0.12s ease-out;position:absolute;inset:0;background-image:linear-gradient(rgba(30,39,54,.4) 1px,transparent 1px),linear-gradient(90deg,rgba(30,39,54,.4) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,black 40%,transparent 100%);}
 .orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;}
 .orb1{width:500px;height:500px;background:rgba(0,255,194,.07);top:-100px;right:-100px;animation:orbF 8s ease-in-out infinite;}
 .orb2{width:350px;height:350px;background:rgba(124,106,255,.08);bottom:50px;left:100px;animation:orbF 10s ease-in-out infinite reverse;}
@@ -303,20 +304,6 @@ h2.c-head{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(36px,6vw
         <span class="ttitle">sai@portfolio ~ zsh</span>
       </div>
       <div class="tbody" id="terminalBody"></div>
-        <div><span class="tp">❯ </span><span class="tc">whoami</span></div>
-        <div><span class="tv">sai_mandapati</span></div><br>
-        <div><span class="tp">❯ </span><span class="tc">cat profile.json</span></div>
-        <div><span class="tco">{</span></div>
-        <div>&nbsp;&nbsp;<span class="tk">"role"</span>: <span class="ts">"AI Product Intern @ MSH Global"</span>,</div>
-        <div>&nbsp;&nbsp;<span class="tk">"school"</span>: <span class="ts">"Rutgers University"</span>,</div>
-        <div>&nbsp;&nbsp;<span class="tk">"focus"</span>: <span class="ts">"RAG · ASL Recognition · IoT"</span>,</div>
-        <div>&nbsp;&nbsp;<span class="tk">"stack"</span>: <span class="ts">"Python · Java · React · Flask"</span></div>
-        <div><span class="tco">}</span></div><br>
-        <div><span class="tp">❯ </span><span class="tc">python signbridge.py</span></div>
-        <div><span class="tv">✓ MediaPipe  [21 landmarks]</span></div>
-        <div><span class="tv">✓ RandomForest [95.3% acc]</span></div>
-        <div><span class="tv">✓ Flask server [localhost:5000]</span></div>
-        <div><span class="tp">❯ </span><span class="tcur"></span></div>
       </div>
     </div>
   </div>
@@ -705,7 +692,7 @@ const observer = new IntersectionObserver(entries=>{
   });
 });
 
-document.querySelectorAll("section").forEach(el=>{
+document.querySelectorAll(".reveal").forEach(el=>{
   observer.observe(el);
 });
 // Parallax (HERO GRID)
@@ -714,8 +701,9 @@ const grid = document.querySelector(".hero-grid");
 
 if(hero && grid){
   hero.addEventListener("mousemove", e=>{
-    const x = (e.clientX / window.innerWidth - 0.5) * 20;
-    const y = (e.clientY / window.innerHeight - 0.5) * 20;
+    const rect = hero.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 20;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 20;
     grid.style.transform = `translate(${x}px, ${y}px)`;
   });
 
