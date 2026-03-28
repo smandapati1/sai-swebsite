@@ -1,4 +1,6 @@
 
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -266,14 +268,24 @@ h2.c-head{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(36px,6vw
   .skills-wrap{grid-template-columns:1fr;}
   .about-wrap{grid-template-columns:1fr;}
 }
+
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;letter-spacing:.1em;display:flex;gap:2px;align-items:center;}
+.logo span{display:inline-block;transition:transform .3s ease,color .3s ease;}
+.logo:hover span:nth-child(1){transform:translateY(-3px);color:var(--accent);}
+.logo:hover span:nth-child(2){transform:translateY(3px);color:var(--accent2);}
+.skills-anim-bar{width:120px;height:3px;margin-top:10px;background:linear-gradient(90deg,var(--accent),var(--accent2));animation:pulseBar 2s ease-in-out infinite;}
+@keyframes pulseBar{0%,100%{transform:scaleX(1);opacity:.7;}50%{transform:scaleX(1.4);opacity:1;}}
+
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
 </head>
 <body>
 <div id="cur"></div>
 <div id="cur2"></div>
  
 <nav>
-  <a href="#hero" class="nav-logo">SM_</a>
+  <a href="#hero" class="nav-logo logo"><span>S</span><span>M</span></a>
   <ul class="nav-links">
     <li><a href="#projects">Projects</a></li>
     <li><a href="#skills">Skills</a></li>
@@ -354,7 +366,24 @@ h2.c-head{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(36px,6vw
         </div>
       </div>
       <div class="pvis">
-        <canvas id="handCanvas" width="220" height="270" style="display:block;"></canvas>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+<button id="startDemo" class="btn-p">Try Live Demo</button>
+<video id="webcam" autoplay playsinline width="240" height="180" style="display:none;border-radius:10px;"></video>
+<canvas id="outputCanvas" width="240" height="180" style="display:none;border-radius:10px;background:#05070d;"></canvas>
+<div id="predictionPanel" style="display:none;width:240px;border:1px solid var(--border);border-radius:10px;padding:12px 14px;background:rgba(255,255,255,.03);">
+  <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Experimental ASL Prediction</div>
+  <div style="display:flex;align-items:end;justify-content:space-between;gap:12px;">
+    <div>
+      <div id="predLetter" style="font-family:'Syne',sans-serif;font-size:32px;line-height:1;color:var(--accent);">—</div>
+      <div id="predLabel" style="font-size:11px;color:var(--muted);margin-top:4px;">Waiting for hand…</div>
+    </div>
+    <div style="text-align:right;">
+      <div id="predConfidence" style="font-family:'Syne',sans-serif;font-size:22px;line-height:1;">0%</div>
+      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:4px;">confidence</div>
+    </div>
+  </div>
+</div>
+</div>
       </div>
     </div>
  
@@ -385,6 +414,7 @@ h2.c-head{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(36px,6vw
   <div class="reveal">
     <span class="sec-num">02</span>
     <h2 class="sec-title">Technical Skills</h2>
+    <div class="skills-anim-bar"></div>
     <div class="sec-line"></div>
   </div>
   <div class="skills-wrap">
@@ -589,32 +619,7 @@ counter('s2', 15, 1200);
 counter('s3', 3, 900);
 counter('s4', 10, 1100);
  
-// Hand canvas
-(function(){
-  const c=document.getElementById('handCanvas');
-  if(!c)return;
-  const ctx=c.getContext('2d');
-  const W=c.width,H=c.height;
-  const base=[[110,248],[88,205],[70,175],[57,152],[46,135],[108,192],[104,148],[101,112],[99,85],[125,188],[124,142],[123,105],[122,78],[142,192],[142,148],[141,113],[140,88],[159,200],[163,163],[165,133],[167,110]];
-  const bones=[[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[0,9],[9,10],[10,11],[11,12],[0,13],[13,14],[14,15],[15,16],[0,17],[17,18],[18,19],[19,20],[5,9],[9,13],[13,17]];
-  const tips=[4,8,12,16,20];
-  let t=0;
-  function draw(){
-    ctx.clearRect(0,0,W,H);t+=0.016;
-    const lm=base.map(([x,y],i)=>[x+Math.sin(t*.7+i*.35)*1.4,y+Math.cos(t*.5+i*.4)*1.8]);
-    ctx.beginPath();[0,5,9,13,17].forEach((i,idx)=>{idx===0?ctx.moveTo(lm[i][0],lm[i][1]):ctx.lineTo(lm[i][0],lm[i][1]);});
-    ctx.closePath();ctx.fillStyle='rgba(0,255,194,0.04)';ctx.fill();
-    bones.forEach(([a,b])=>{ctx.beginPath();ctx.moveTo(lm[a][0],lm[a][1]);ctx.lineTo(lm[b][0],lm[b][1]);ctx.strokeStyle='rgba(0,255,194,0.3)';ctx.lineWidth=1.5;ctx.stroke();});
-    lm.forEach(([x,y],i)=>{
-      const tip=tips.includes(i);
-      if(tip){const g=ctx.createRadialGradient(x,y,0,x,y,14);g.addColorStop(0,'rgba(0,255,194,0.35)');g.addColorStop(1,'rgba(0,255,194,0)');ctx.beginPath();ctx.arc(x,y,14,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();}
-      ctx.beginPath();ctx.arc(x,y,tip?5.5:3.5,0,Math.PI*2);ctx.fillStyle=tip?'#00ffc2':'rgba(0,255,194,0.75)';ctx.fill();
-    });
-    ctx.font='9px monospace';ctx.fillStyle='rgba(0,255,194,0.3)';ctx.fillText('21 LANDMARKS · LIVE',10,H-10);
-    requestAnimationFrame(draw);
-  }
-  draw();
-})();
+
  
 // EWS chart — drawn after layout so clientWidth is available
 window.addEventListener('load',function(){
@@ -711,6 +716,148 @@ if(hero && grid){
     grid.style.transform = "translate(0,0)";
   });
 }
+
+
+
+
+// ===== LIVE SIGNBRIDGE ML + EXPERIMENTAL ASL PREDICTION =====
+document.addEventListener("DOMContentLoaded", () => {
+  const startBtn = document.getElementById('startDemo');
+  const video = document.getElementById('webcam');
+  const canvas = document.getElementById('outputCanvas');
+  const predPanel = document.getElementById('predictionPanel');
+  const predLetter = document.getElementById('predLetter');
+  const predLabel = document.getElementById('predLabel');
+  const predConfidence = document.getElementById('predConfidence');
+
+  if(!startBtn || !video || !canvas || !window.Hands || !window.Camera) return;
+
+  const ctx = canvas.getContext('2d');
+
+  function dist(a, b){
+    return Math.hypot(a.x - b.x, a.y - b.y);
+  }
+
+  function fingerExtended(landmarks, tip, pip){
+    return landmarks[tip].y < landmarks[pip].y;
+  }
+
+  function classifyASL(landmarks){
+    const thumbTip = landmarks[4];
+    const indexTip = landmarks[8];
+    const wrist = landmarks[0];
+
+    const indexUp = fingerExtended(landmarks, 8, 6);
+    const middleUp = fingerExtended(landmarks, 12, 10);
+    const ringUp = fingerExtended(landmarks, 16, 14);
+    const pinkyUp = fingerExtended(landmarks, 20, 18);
+
+    const thumbIndexGap = dist(thumbTip, indexTip);
+    const thumbWristGap = dist(thumbTip, wrist);
+
+    if(!indexUp && !middleUp && !ringUp && !pinkyUp && thumbWristGap > 0.16){
+      return {letter:'A', label:'Fist / A-like', confidence:0.86};
+    }
+    if(indexUp && middleUp && ringUp && pinkyUp && thumbIndexGap < 0.12){
+      return {letter:'B', label:'Flat hand / B-like', confidence:0.84};
+    }
+    if(indexUp && !middleUp && !ringUp && !pinkyUp && thumbIndexGap > 0.18){
+      return {letter:'L', label:'L-shape', confidence:0.90};
+    }
+    if(!indexUp && !middleUp && !ringUp && pinkyUp && thumbIndexGap > 0.18){
+      return {letter:'Y', label:'Hang loose / Y-like', confidence:0.78};
+    }
+    if(!indexUp && !middleUp && !ringUp && pinkyUp){
+      return {letter:'I', label:'Pinky up', confidence:0.80};
+    }
+    if(indexUp && !middleUp && !ringUp && !pinkyUp && thumbIndexGap <= 0.18){
+      return {letter:'D', label:'Point / D-like', confidence:0.74};
+    }
+    return {letter:'?', label:'Uncertain handshape', confidence:0.42};
+  }
+
+  const hands = new Hands({
+    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+  });
+
+  hands.setOptions({
+    maxNumHands: 1,
+    modelComplexity: 1,
+    minDetectionConfidence: 0.7,
+    minTrackingConfidence: 0.7
+  });
+
+  hands.onResults((results) => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (!results.multiHandLandmarks || !results.multiHandLandmarks.length) {
+      predLetter.textContent = '—';
+      predLabel.textContent = 'Waiting for hand…';
+      predConfidence.textContent = '0%';
+      return;
+    }
+
+    results.multiHandLandmarks.forEach((landmarks) => {
+      const pairs = [
+        [0,1],[1,2],[2,3],[3,4],
+        [0,5],[5,6],[6,7],[7,8],
+        [5,9],[9,10],[10,11],[11,12],
+        [9,13],[13,14],[14,15],[15,16],
+        [13,17],[17,18],[18,19],[19,20],
+        [0,17]
+      ];
+
+      ctx.strokeStyle = 'rgba(0,255,194,0.35)';
+      ctx.lineWidth = 2;
+
+      pairs.forEach(([a,b]) => {
+        ctx.beginPath();
+        ctx.moveTo(landmarks[a].x * canvas.width, landmarks[a].y * canvas.height);
+        ctx.lineTo(landmarks[b].x * canvas.width, landmarks[b].y * canvas.height);
+        ctx.stroke();
+      });
+
+      landmarks.forEach((pt) => {
+        const x = pt.x * canvas.width;
+        const y = pt.y * canvas.height;
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, 2 * Math.PI);
+        ctx.fillStyle = '#00ffc2';
+        ctx.fill();
+      });
+
+      const pred = classifyASL(landmarks);
+      predLetter.textContent = pred.letter;
+      predLabel.textContent = pred.label;
+      predConfidence.textContent = `${Math.round(pred.confidence * 100)}%`;
+    });
+  });
+
+  const camera = new Camera(video, {
+    onFrame: async () => {
+      await hands.send({ image: video });
+    },
+    width: 240,
+    height: 180
+  });
+
+  startBtn.addEventListener('click', async () => {
+    try {
+      video.style.display = 'block';
+      canvas.style.display = 'block';
+      if (predPanel) predPanel.style.display = 'block';
+      startBtn.textContent = 'Loading Demo...';
+      startBtn.disabled = true;
+      await camera.start();
+      startBtn.style.display = 'none';
+    } catch (err) {
+      console.error(err);
+      startBtn.textContent = 'Camera Blocked';
+      startBtn.disabled = false;
+      if (predLabel) predLabel.textContent = 'Allow camera access or use Live Server / HTTPS.';
+    }
+  });
+});
 
 </script>
 </body>
