@@ -1,6 +1,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -276,6 +277,16 @@ h2.c-head{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(36px,6vw
 .skills-anim-bar{width:120px;height:3px;margin-top:10px;background:linear-gradient(90deg,var(--accent),var(--accent2));animation:pulseBar 2s ease-in-out infinite;}
 @keyframes pulseBar{0%,100%{transform:scaleX(1);opacity:.7;}50%{transform:scaleX(1.4);opacity:1;}}
 
+
+.skills-pulse{display:flex;align-items:center;gap:10px;margin-top:20px;font-size:11px;color:var(--muted);letter-spacing:.1em;}
+.pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:pulseDot 1.5s infinite;}
+.pulse-line{width:40px;height:2px;background:linear-gradient(90deg,var(--accent),transparent);animation:flow 2s infinite;}
+@keyframes pulseDot{0%{transform:scale(1);opacity:1;}70%{transform:scale(1.8);opacity:0.3;}100%{transform:scale(1);opacity:1;}}
+@keyframes flow{0%{transform:translateX(-10px);opacity:0;}50%{opacity:1;}100%{transform:translateX(10px);opacity:0;}}
+.exp-anim{width:24px;height:24px;border:1px solid var(--border);border-radius:6px;position:relative;overflow:hidden;}
+.scan-line{position:absolute;width:100%;height:2px;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:scan 2s linear infinite;}
+@keyframes scan{0%{top:0;}100%{top:100%;}}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
@@ -419,6 +430,11 @@ h2.c-head{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(36px,6vw
   </div>
   <div class="skills-wrap">
     <div class="skills-intro">
+      <div class="skills-pulse">
+        <div class="pulse-dot"></div>
+        <div class="pulse-line"></div>
+        <span>System actively learning & evolving</span>
+      </div>
       <p><strong>Full ML pipeline. Full stack.</strong></p>
       <p>From RAG systems and vector stores to backend enterprise services — I build things that ship.</p>
     </div>
@@ -466,7 +482,10 @@ h2.c-head{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(36px,6vw
 <section id="experience">
   <div class="reveal">
     <span class="sec-num">03</span>
-    <h2 class="sec-title">Experience</h2>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <h2 class="sec-title">Experience</h2>
+      <div class="exp-anim"><div class="scan-line"></div></div>
+    </div>
     <div class="sec-line"></div>
   </div>
   <div class="timeline">
