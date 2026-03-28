@@ -2,6 +2,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -287,6 +288,38 @@ h2.c-head{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(36px,6vw
 .scan-line{position:absolute;width:100%;height:2px;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:scan 2s linear infinite;}
 @keyframes scan{0%{top:0;}100%{top:100%;}}
 
+
+.rag-flow{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:18px;
+  font-size:10px;
+  color:var(--muted);
+  letter-spacing:.1em;
+}
+.node{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 8px var(--accent);
+  animation:nodePulse 1.5s infinite;
+}
+.line{
+  width:30px;height:2px;
+  background:linear-gradient(90deg,var(--accent),transparent);
+  animation:flowLine 1.5s infinite;
+}
+@keyframes nodePulse{
+  0%{opacity:1;transform:scale(1);}
+  50%{opacity:.3;transform:scale(1.6);}
+  100%{opacity:1;transform:scale(1);}
+}
+@keyframes flowLine{
+  0%{transform:translateX(-5px);opacity:0;}
+  50%{opacity:1;}
+  100%{transform:translateX(5px);opacity:0;}
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
@@ -497,6 +530,15 @@ h2.c-head{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(36px,6vw
       </div>
       <h4 class="tl-role">AI Product Intern</h4>
       <p class="tl-desc">Building an end-to-end RAG pipeline for insurance document Q&amp;A — chunking policy PDFs, generating embeddings via OpenAI/Cohere, and querying a vector store (Pinecone/Chroma) with LLM-synthesized, citation-grounded responses. Engineered prompt templates and retrieval strategies to reduce hallucinations on complex coverage queries. Developed a React frontend with a streaming chat UI surfacing source citations and confidence signals.</p>
+      <div class="rag-flow">
+        <div class="node"></div>
+        <div class="line"></div>
+        <div class="node"></div>
+        <div class="line"></div>
+        <div class="node"></div>
+        <span>Retrieval → Embedding → Generation</span>
+      </div>
+
     </div>
     <div class="tl-item">
       <div class="tl-dot"></div>
